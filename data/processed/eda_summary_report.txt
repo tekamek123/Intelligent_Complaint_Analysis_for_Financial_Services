@@ -1,0 +1,38 @@
+================================================================================
+EDA AND PREPROCESSING SUMMARY REPORT
+================================================================================
+
+1. DATASET OVERVIEW
+--------------------------------------------------------------------------------
+   Original dataset size: 9,609,797 rows, 20 columns
+   Filtered dataset size: 456,218 rows, 18 columns
+   Reduction: 9,153,579 rows (95.25%)
+
+2. PRODUCT DISTRIBUTION
+--------------------------------------------------------------------------------
+   Checking or savings account: 140,319 (30.76%)
+   Credit card or prepaid card: 108,667 (23.82%)
+   Money transfer, virtual currency, or money service: 97,188 (21.30%)
+   Credit card: 80,667 (17.68%)
+   Payday loan, title loan, or personal loan: 17,238 (3.78%)
+   Payday loan, title loan, personal loan, or advance loan: 8,896 (1.95%)
+   Payday loan: 1,746 (0.38%)
+   Money transfers: 1,497 (0.33%)
+
+3. NARRATIVE ANALYSIS
+--------------------------------------------------------------------------------
+
+4. DATA QUALITY IMPROVEMENTS
+--------------------------------------------------------------------------------
+   - Filtered to include only target products (Credit Card, Personal Loan, Savings Account, Money Transfer)
+   - Removed all records with empty or missing narratives
+   - Applied text cleaning: lowercasing, boilerplate removal, special character handling
+   - Normalized whitespace and punctuation
+
+5. KEY FINDINGS
+--------------------------------------------------------------------------------
+   - Most common product category: Checking or savings account (140,319 complaints)
+   - Original dataset had 2,980,756 complaints with narratives
+   - Final dataset contains 456,218 complaints with valid narratives
+
+================================================================================
