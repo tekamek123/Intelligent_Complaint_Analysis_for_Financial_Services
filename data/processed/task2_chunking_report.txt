@@ -1,0 +1,43 @@
+================================================================================
+TASK 2: CHUNKING STRATEGY REPORT
+================================================================================
+
+1. CHUNKING METHODOLOGY
+--------------------------------------------------------------------------------
+   Library: LangChain RecursiveCharacterTextSplitter
+   Chunk Size: 500 characters
+   Chunk Overlap: 50 characters
+
+   Rationale for chunk size (500 characters):
+   - Balances context preservation with embedding quality
+   - Large enough to capture meaningful context and complete thoughts
+   - Small enough to ensure embeddings capture focused semantic meaning
+   - Aligns with the pre-built embeddings specification (500 chars)
+
+   Rationale for chunk overlap (50 characters):
+   - Prevents loss of context at chunk boundaries
+   - Ensures important information spanning chunk boundaries is preserved
+   - 10% overlap provides good balance between redundancy and coverage
+
+2. CHUNKING STATISTICS
+--------------------------------------------------------------------------------
+   Total chunks created: 37,158
+   Average chunk length: 371 characters
+   Median chunk length: 407 characters
+   Min chunk length: 6 characters
+   Max chunk length: 500 characters
+
+   Average chunks per complaint: 3.10
+
+3. SPLITTING STRATEGY
+--------------------------------------------------------------------------------
+   The RecursiveCharacterTextSplitter uses the following separators in order:
+   1. Double newlines (\n\n) - Split on paragraph boundaries
+   2. Single newlines (\n) - Split on line boundaries
+   3. Periods followed by spaces (. ) - Split on sentence boundaries
+   4. Spaces - Split on word boundaries
+   5. Empty string - Split on character boundaries (last resort)
+
+   This hierarchical approach preserves semantic structure when possible.
+
+================================================================================

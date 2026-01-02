@@ -1,0 +1,35 @@
+================================================================================
+TASK 2: SAMPLING STRATEGY REPORT
+================================================================================
+
+1. SAMPLING METHODOLOGY
+--------------------------------------------------------------------------------
+   Method: Stratified Random Sampling
+   Target Sample Size: 12,000
+   Actual Sample Size: 11,995
+
+   Rationale:
+   - Stratified sampling ensures proportional representation across all
+     product categories, maintaining the distribution of the full dataset
+   - This approach prevents over-representation of dominant product categories
+   - Each product category is sampled proportionally to its occurrence in
+     the full dataset
+
+2. SAMPLE DISTRIBUTION BY PRODUCT
+--------------------------------------------------------------------------------
+   Checking or savings account: 3,690 (30.76%)
+   Credit card or prepaid card: 2,858 (23.83%)
+   Money transfer, virtual currency, or money service: 2,556 (21.31%)
+   Credit card: 2,121 (17.68%)
+   Payday loan, title loan, or personal loan: 453 (3.78%)
+   Payday loan, title loan, personal loan, or advance loan: 233 (1.94%)
+   Payday loan: 45 (0.38%)
+   Money transfers: 39 (0.33%)
+
+3. SAMPLING PARAMETERS
+--------------------------------------------------------------------------------
+   Random Seed: 42 (for reproducibility)
+   Minimum samples per category: 1
+   Sampling method: Random sampling within each stratum
+
+================================================================================

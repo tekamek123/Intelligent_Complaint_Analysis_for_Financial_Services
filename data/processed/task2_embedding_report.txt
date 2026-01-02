@@ -1,0 +1,38 @@
+================================================================================
+TASK 2: EMBEDDING MODEL REPORT
+================================================================================
+
+1. EMBEDDING MODEL
+--------------------------------------------------------------------------------
+   Model: sentence-transformers/all-MiniLM-L6-v2
+   Dimension: 384
+   Total embeddings generated: 37,158
+
+2. MODEL SELECTION RATIONALE
+--------------------------------------------------------------------------------
+   The sentence-transformers/all-MiniLM-L6-v2 model was chosen for the following reasons:
+
+   a) Performance vs. Size Balance:
+      - Provides good semantic understanding while maintaining efficiency
+      - 384-dimensional embeddings offer sufficient expressiveness
+      - Model size (~80MB) allows for fast inference
+
+   b) Compatibility:
+      - Matches the pre-built embeddings specification for Tasks 3-4
+      - Ensures consistency across the project pipeline
+
+   c) Domain Suitability:
+      - Trained on diverse text, suitable for consumer complaint narratives
+      - Handles informal language and domain-specific terminology well
+
+   d) Industry Standard:
+      - Widely used in production RAG systems
+      - Good balance of speed and quality for semantic search
+
+3. EMBEDDING GENERATION
+--------------------------------------------------------------------------------
+   Batch processing: Yes (batch size: 32)
+   Progress tracking: Enabled
+   Format: NumPy arrays (converted to lists for ChromaDB)
+
+================================================================================
