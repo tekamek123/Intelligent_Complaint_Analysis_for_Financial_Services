@@ -68,16 +68,29 @@ Each complaint record includes:
 ### Project Structure
 
 ```
-week7/
-├── README.md
+rag-complaint-chatbot/
+├── .vscode/
+│   └── settings.json
+├── .github/
+│   └── workflows/
+│       └── unittests.yml
 ├── data/
-│   └── raw/
-│       ├── complaints.csv
-│       └── complaint_embeddings.parquet
-├── task-1/          # EDA and preprocessing
-├── task-2/          # Embedding pipeline (sample data)
-├── task-3/          # RAG pipeline development
-└── task-4/          # UI development
+│   ├── raw/                       # Original data files
+│   │   ├── complaints.csv
+│   │   └── complaint_embeddings.parquet
+│   └── processed/                 # Processed and cleaned data
+├── vector_store/                  # Persisted FAISS/ChromaDB index
+├── notebooks/
+│   ├── __init__.py
+│   └── README.md
+├── src/
+│   ├── __init__.py
+├── tests/
+│   ├── __init__.py
+├── app.py                         # Gradio/Streamlit interface
+├── requirements.txt
+├── README.md
+└── .gitignore
 ```
 
 ### Branch Structure
