@@ -7,7 +7,7 @@ import pandas as pd
 import numpy as np
 from pathlib import Path
 import warnings
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Tuple, Optional
 import json
 from datetime import datetime
 
@@ -42,8 +42,18 @@ DATA_PROCESSED.mkdir(parents=True, exist_ok=True)
 VECTOR_STORE_DIR.mkdir(parents=True, exist_ok=True)
 
 
-def load_cleaned_data():
-    """Load the cleaned and filtered dataset from Task 1."""
+def load_cleaned_data() -> pd.DataFrame:
+    """
+    Load the cleaned and filtered dataset from Task 1.
+    
+    Returns:
+        pd.DataFrame: Loaded cleaned dataset
+        
+    Raises:
+        FileNotFoundError: If the cleaned dataset file is not found
+        ValueError: If the file cannot be read or is empty
+        pd.errors.EmptyDataError: If the CSV file is empty
+    """
     print("="*80)
     print("LOADING CLEANED DATASET")
     print("="*80)
@@ -57,15 +67,34 @@ def load_cleaned_data():
         )
     
     print(f"\nLoading cleaned dataset from: {data_path}")
-    df = pd.read_csv(data_path, low_memory=False)
+    try:
+        df = pd.read_csv(data_path, low_memory=False)
+    except pd.errors.EmptyDataError as e:
+        raise ValueError(f"Cleaned dataset file is empty: {e}") from e
+    except pd.errors.ParserError as e:
+        raise ValueError(f"Failed to parse cleaned dataset CSV: {e}") from e
+    except Exception as e:
+        raise RuntimeError(f"Unexpected error loading cleaned dataset: {e}") from e
+    
+    if df.empty:
+        raise ValueError("Loaded dataset is empty. Please check the data file.")
+    
     print(f"Dataset loaded: {len(df):,} rows, {len(df.columns)} columns")
     print(f"Columns: {list(df.columns)}")
     
     return df
 
 
-def identify_columns(df):
-    """Identify key columns in the dataset."""
+def identify_columns(df: pd.DataFrame) -> Tuple[Optional[str], Optional[str], Optional[str]]:
+    """
+    Identify key columns in the dataset.
+    
+    Args:
+        df: DataFrame to analyze
+        
+    Returns:
+        Tuple of (product_col, narrative_col, complaint_id_col), each may be None if not found
+    """
     # Find product column
     product_col = None
     for col in ['Product', 'product', 'product_category', 'Product category']:
@@ -95,20 +124,33 @@ def identify_columns(df):
     return product_col, narrative_col, complaint_id_col
 
 
-def create_stratified_sample(df, product_col, narrative_col, target_size=12000):
+def create_stratified_sample(
+    df: pd.DataFrame, 
+    product_col: Optional[str], 
+    narrative_col: Optional[str], 
+    target_size: int = 12000
+) -> pd.DataFrame:
     """
     Create a stratified sample of complaints ensuring proportional representation
     across all product categories.
     
     Args:
         df: DataFrame with cleaned complaints
-        product_col: Name of the product column
-        narrative_col: Name of the narrative column
+        product_col: Name of the product column, or None if not found
+        narrative_col: Name of the narrative column, or None if not found
         target_size: Target sample size (default 12000, between 10K-15K)
     
     Returns:
-        Stratified sample DataFrame
+        pd.DataFrame: Stratified sample DataFrame
+        
+    Raises:
+        ValueError: If narrative_col is None or DataFrame is empty
     """
+    if narrative_col is None:
+        raise ValueError("Narrative column is required for sampling but was not found.")
+    
+    if df.empty:
+        raise ValueError("Cannot create sample from empty DataFrame.")
     print("\n" + "="*80)
     print("CREATING STRATIFIED SAMPLE")
     print("="*80)
@@ -181,19 +223,33 @@ def create_stratified_sample(df, product_col, narrative_col, target_size=12000):
     return df_sample
 
 
-def chunk_texts(df, narrative_col, chunk_size=500, chunk_overlap=50):
+def chunk_texts(
+    df: pd.DataFrame, 
+    narrative_col: Optional[str], 
+    chunk_size: int = 500, 
+    chunk_overlap: int = 50
+) -> List[Dict[str, Any]]:
     """
     Chunk the complaint narratives using LangChain's RecursiveCharacterTextSplitter.
     
     Args:
         df: DataFrame with complaint narratives
-        narrative_col: Name of the narrative column
-        chunk_size: Target size of each chunk in characters
-        chunk_overlap: Number of characters to overlap between chunks
+        narrative_col: Name of the narrative column, or None if not found
+        chunk_size: Target size of each chunk in characters (default: 500)
+        chunk_overlap: Number of characters to overlap between chunks (default: 50)
     
     Returns:
-        List of dictionaries, each containing chunk text and metadata
+        List[Dict[str, Any]]: List of dictionaries, each containing chunk text and metadata
+        
+    Raises:
+        ValueError: If narrative_col is None or DataFrame is empty
+        RuntimeError: If text splitting fails
     """
+    if narrative_col is None:
+        raise ValueError("Narrative column is required for chunking but was not found.")
+    
+    if df.empty:
+        raise ValueError("Cannot chunk empty DataFrame.")
     print("\n" + "="*80)
     print("CHUNKING TEXT NARRATIVES")
     print("="*80)
@@ -203,12 +259,15 @@ def chunk_texts(df, narrative_col, chunk_size=500, chunk_overlap=50):
     print(f"  Chunk overlap: {chunk_overlap} characters")
     
     # Initialize text splitter
-    text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=chunk_size,
-        chunk_overlap=chunk_overlap,
-        length_function=len,
-        separators=["\n\n", "\n", ". ", " ", ""]  # Try to split on paragraphs, sentences, words
-    )
+    try:
+        text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size=chunk_size,
+            chunk_overlap=chunk_overlap,
+            length_function=len,
+            separators=["\n\n", "\n", ". ", " ", ""]  # Try to split on paragraphs, sentences, words
+        )
+    except Exception as e:
+        raise RuntimeError(f"Failed to initialize text splitter: {e}") from e
     
     all_chunks = []
     total_chunks = 0
@@ -251,15 +310,19 @@ def chunk_texts(df, narrative_col, chunk_size=500, chunk_overlap=50):
     return all_chunks
 
 
-def load_embedding_model(model_name="sentence-transformers/all-MiniLM-L6-v2"):
+def load_embedding_model(model_name: str = "sentence-transformers/all-MiniLM-L6-v2") -> SentenceTransformer:
     """
     Load the embedding model.
     
     Args:
-        model_name: Name of the sentence transformer model
+        model_name: Name of the sentence transformer model (default: all-MiniLM-L6-v2)
     
     Returns:
-        Loaded SentenceTransformer model
+        SentenceTransformer: Loaded embedding model
+        
+    Raises:
+        OSError: If model cannot be downloaded or loaded
+        RuntimeError: If model initialization fails
     """
     print("\n" + "="*80)
     print("LOADING EMBEDDING MODEL")
@@ -268,7 +331,15 @@ def load_embedding_model(model_name="sentence-transformers/all-MiniLM-L6-v2"):
     print(f"\nLoading model: {model_name}")
     print("This may take a few minutes on first run (downloading model)...")
     
-    model = SentenceTransformer(model_name)
+    try:
+        model = SentenceTransformer(model_name)
+    except OSError as e:
+        raise OSError(
+            f"Failed to download or load model {model_name}. "
+            "Please check your internet connection and try again."
+        ) from e
+    except Exception as e:
+        raise RuntimeError(f"Unexpected error loading embedding model: {e}") from e
     
     print(f"Model loaded successfully!")
     print(f"  Model dimension: {model.get_sentence_embedding_dimension()}")
@@ -276,18 +347,31 @@ def load_embedding_model(model_name="sentence-transformers/all-MiniLM-L6-v2"):
     return model
 
 
-def generate_embeddings(chunks, model, batch_size=32):
+def generate_embeddings(
+    chunks: List[Dict[str, Any]], 
+    model: SentenceTransformer, 
+    batch_size: int = 32
+) -> np.ndarray:
     """
     Generate embeddings for all text chunks.
     
     Args:
-        chunks: List of chunk dictionaries
-        model: SentenceTransformer model
-        batch_size: Batch size for embedding generation
+        chunks: List of chunk dictionaries containing 'chunk_text' key
+        model: SentenceTransformer model for generating embeddings
+        batch_size: Batch size for embedding generation (default: 32)
     
     Returns:
-        List of embeddings (numpy arrays)
+        np.ndarray: Array of embeddings with shape (n_chunks, embedding_dim)
+        
+    Raises:
+        ValueError: If chunks list is empty or missing required keys
+        RuntimeError: If embedding generation fails
     """
+    if not chunks:
+        raise ValueError("Cannot generate embeddings for empty chunks list.")
+    
+    if not all('chunk_text' in chunk for chunk in chunks):
+        raise ValueError("All chunks must contain 'chunk_text' key.")
     print("\n" + "="*80)
     print("GENERATING EMBEDDINGS")
     print("="*80)
@@ -299,12 +383,15 @@ def generate_embeddings(chunks, model, batch_size=32):
     print(f"Using batch size: {batch_size}")
     
     # Generate embeddings in batches
-    embeddings = model.encode(
-        chunk_texts,
-        batch_size=batch_size,
-        show_progress_bar=True,
-        convert_to_numpy=True
-    )
+    try:
+        embeddings = model.encode(
+            chunk_texts,
+            batch_size=batch_size,
+            show_progress_bar=True,
+            convert_to_numpy=True
+        )
+    except Exception as e:
+        raise RuntimeError(f"Failed to generate embeddings: {e}") from e
     
     print(f"\nEmbeddings generated successfully!")
     print(f"  Total embeddings: {len(embeddings):,}")
@@ -313,7 +400,14 @@ def generate_embeddings(chunks, model, batch_size=32):
     return embeddings
 
 
-def create_vector_store(chunks, embeddings, df, product_col, narrative_col, complaint_id_col):
+def create_vector_store(
+    chunks: List[Dict[str, Any]], 
+    embeddings: np.ndarray, 
+    df: pd.DataFrame, 
+    product_col: Optional[str], 
+    narrative_col: Optional[str], 
+    complaint_id_col: Optional[str]
+) -> Tuple[Any, Path]:
     """
     Create a ChromaDB vector store with embeddings and metadata.
     
@@ -321,10 +415,26 @@ def create_vector_store(chunks, embeddings, df, product_col, narrative_col, comp
         chunks: List of chunk dictionaries
         embeddings: Numpy array of embeddings
         df: Original DataFrame
-        product_col: Name of product column
-        narrative_col: Name of narrative column
-        complaint_id_col: Name of complaint ID column
+        product_col: Name of product column, or None if not found
+        narrative_col: Name of narrative column, or None if not found
+        complaint_id_col: Name of complaint ID column, or None if not found
+    
+    Returns:
+        Tuple containing:
+            - ChromaDB collection object
+            - Path to the vector store directory
+            
+    Raises:
+        ValueError: If inputs are invalid
+        RuntimeError: If vector store creation fails
     """
+    if not chunks:
+        raise ValueError("Cannot create vector store with empty chunks list.")
+    
+    if len(chunks) != len(embeddings):
+        raise ValueError(
+            f"Mismatch between chunks ({len(chunks)}) and embeddings ({len(embeddings)})"
+        )
     print("\n" + "="*80)
     print("CREATING VECTOR STORE")
     print("="*80)
@@ -333,7 +443,10 @@ def create_vector_store(chunks, embeddings, df, product_col, narrative_col, comp
     chroma_path = VECTOR_STORE_DIR / "chroma_db"
     print(f"\nInitializing ChromaDB at: {chroma_path}")
     
-    client = chromadb.PersistentClient(path=str(chroma_path))
+    try:
+        client = chromadb.PersistentClient(path=str(chroma_path))
+    except Exception as e:
+        raise RuntimeError(f"Failed to initialize ChromaDB client: {e}") from e
     
     # Create or get collection
     collection_name = "complaint_chunks"

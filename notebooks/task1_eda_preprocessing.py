@@ -11,6 +11,7 @@ import seaborn as sns
 import re
 from pathlib import Path
 import warnings
+from typing import Tuple, Optional
 
 warnings.filterwarnings('ignore')
 
@@ -27,12 +28,32 @@ DATA_PROCESSED = BASE_DIR / "data" / "processed"
 DATA_PROCESSED.mkdir(parents=True, exist_ok=True)
 
 
-def load_data():
-    """Load the CFPB complaint dataset using chunking for large files."""
+def load_data() -> pd.DataFrame:
+    """
+    Load the CFPB complaint dataset using chunking for large files.
+    
+    Returns:
+        pd.DataFrame: Loaded complaint dataset
+        
+    Raises:
+        FileNotFoundError: If the complaints.csv file is not found
+        ValueError: If the file cannot be read or is empty
+        MemoryError: If system runs out of memory during processing
+    """
     print("Loading CFPB complaint dataset...")
     print("This may take a few minutes for large datasets...")
     
     file_path = DATA_RAW / "complaints.csv"
+    
+    # Check if file exists
+    if not file_path.exists():
+        raise FileNotFoundError(
+            f"Complaints file not found at {file_path}. "
+            "Please ensure data/raw/complaints.csv exists."
+        )
+    
+    if not file_path.is_file():
+        raise ValueError(f"Path {file_path} exists but is not a file.")
     
     # Read in chunks to handle large files efficiently
     chunk_size = 50000  # Read 50k rows at a time
@@ -77,13 +98,32 @@ def load_data():
             df = pd.read_csv(file_path, engine='python', encoding='utf-8', error_bad_lines=False, warn_bad_lines=False)
             print(f"Dataset loaded: {len(df):,} rows, {len(df.columns)} columns")
             return df
+        except (pd.errors.EmptyDataError, pd.errors.ParserError) as e2:
+            raise ValueError(f"Failed to parse CSV file: {e2}") from e2
+        except MemoryError as e2:
+            raise MemoryError(
+                "Out of memory while loading dataset. "
+                "Try reducing chunk_size or using a machine with more RAM."
+            ) from e2
         except Exception as e2:
-            print(f"Error with Python engine: {e2}")
-            raise
+            raise RuntimeError(f"Unexpected error loading data with Python engine: {e2}") from e2
 
 
-def initial_eda(df):
-    """Perform initial exploratory data analysis."""
+def initial_eda(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Perform initial exploratory data analysis on the complaint dataset.
+    
+    Args:
+        df: Input DataFrame containing complaint data
+        
+    Returns:
+        pd.DataFrame: The same DataFrame (for method chaining)
+        
+    Raises:
+        ValueError: If DataFrame is empty or invalid
+    """
+    if df is None or df.empty:
+        raise ValueError("DataFrame is empty or None. Cannot perform EDA.")
     print("\n" + "="*80)
     print("INITIAL EXPLORATORY DATA ANALYSIS")
     print("="*80)
@@ -116,8 +156,18 @@ def initial_eda(df):
     return df
 
 
-def analyze_product_distribution(df):
-    """Analyze the distribution of complaints across different products."""
+def analyze_product_distribution(df: pd.DataFrame) -> Tuple[pd.DataFrame, Optional[str]]:
+    """
+    Analyze the distribution of complaints across different products.
+    
+    Args:
+        df: DataFrame containing complaint data
+        
+    Returns:
+        Tuple containing:
+            - pd.DataFrame: Original DataFrame
+            - Optional[str]: Name of the product column found, or None if not found
+    """
     print("\n" + "="*80)
     print("PRODUCT DISTRIBUTION ANALYSIS")
     print("="*80)
@@ -161,8 +211,18 @@ def analyze_product_distribution(df):
     return df, product_col
 
 
-def analyze_narrative_length(df):
-    """Calculate and visualize the length (word count) of Consumer complaint narratives."""
+def analyze_narrative_length(df: pd.DataFrame) -> Tuple[pd.DataFrame, Optional[str]]:
+    """
+    Calculate and visualize the length (word count) of Consumer complaint narratives.
+    
+    Args:
+        df: DataFrame containing complaint data
+        
+    Returns:
+        Tuple containing:
+            - pd.DataFrame: DataFrame with added narrative length columns
+            - Optional[str]: Name of the narrative column found, or None if not found
+    """
     print("\n" + "="*80)
     print("NARRATIVE LENGTH ANALYSIS")
     print("="*80)
@@ -273,8 +333,30 @@ def analyze_missing_narratives(df, narrative_col):
     return df
 
 
-def filter_dataset(df, product_col, narrative_col):
-    """Filter the dataset to meet project requirements."""
+def filter_dataset(
+    df: pd.DataFrame, 
+    product_col: Optional[str], 
+    narrative_col: Optional[str]
+) -> pd.DataFrame:
+    """
+    Filter the dataset to meet project requirements.
+    
+    Args:
+        df: Input DataFrame
+        product_col: Name of the product column, or None if not found
+        narrative_col: Name of the narrative column, or None if not found
+        
+    Returns:
+        pd.DataFrame: Filtered DataFrame containing only target products with valid narratives
+        
+    Raises:
+        ValueError: If narrative_col is None (required for filtering)
+    """
+    if narrative_col is None:
+        raise ValueError(
+            "Narrative column is required for filtering but was not found. "
+            "Cannot proceed with dataset filtering."
+        )
     print("\n" + "="*80)
     print("FILTERING DATASET")
     print("="*80)
@@ -333,8 +415,16 @@ def filter_dataset(df, product_col, narrative_col):
     return df_filtered
 
 
-def clean_text(text):
-    """Clean text narratives to improve embedding quality."""
+def clean_text(text: str) -> str:
+    """
+    Clean text narratives to improve embedding quality.
+    
+    Args:
+        text: Raw text string to clean
+        
+    Returns:
+        str: Cleaned text string
+    """
     if pd.isna(text) or text == '':
         return ''
     
@@ -374,8 +464,22 @@ def clean_text(text):
     return text
 
 
-def clean_narratives(df, narrative_col):
-    """Apply text cleaning to all narratives."""
+def clean_narratives(df: pd.DataFrame, narrative_col: Optional[str]) -> pd.DataFrame:
+    """
+    Apply text cleaning to all narratives in the DataFrame.
+    
+    Args:
+        df: DataFrame containing narratives
+        narrative_col: Name of the narrative column, or None if not found
+        
+    Returns:
+        pd.DataFrame: DataFrame with cleaned narratives added as 'cleaned_narrative' column
+        
+    Raises:
+        ValueError: If narrative_col is None
+    """
+    if narrative_col is None:
+        raise ValueError("Narrative column is required but was not found.")
     print("\n" + "="*80)
     print("CLEANING TEXT NARRATIVES")
     print("="*80)
@@ -412,8 +516,23 @@ def clean_narratives(df, narrative_col):
     return df
 
 
-def save_cleaned_dataset(df, narrative_col):
-    """Save the cleaned and filtered dataset."""
+def save_cleaned_dataset(df: pd.DataFrame, narrative_col: Optional[str]) -> pd.DataFrame:
+    """
+    Save the cleaned and filtered dataset to disk.
+    
+    Args:
+        df: DataFrame to save
+        narrative_col: Name of the narrative column, or None if not found
+        
+    Returns:
+        pd.DataFrame: Final cleaned DataFrame
+        
+    Raises:
+        IOError: If file cannot be written to disk
+        ValueError: If DataFrame is empty
+    """
+    if df is None or df.empty:
+        raise ValueError("Cannot save empty DataFrame.")
     print("\n" + "="*80)
     print("SAVING CLEANED DATASET")
     print("="*80)
@@ -433,7 +552,10 @@ def save_cleaned_dataset(df, narrative_col):
     
     # Save to CSV
     output_path = DATA_PROCESSED / "filtered_complaints.csv"
-    df_final.to_csv(output_path, index=False)
+    try:
+        df_final.to_csv(output_path, index=False)
+    except (IOError, PermissionError) as e:
+        raise IOError(f"Failed to save cleaned dataset to {output_path}: {e}") from e
     
     print(f"\nCleaned dataset saved to: {output_path}")
     print(f"Final dataset shape: {df_final.shape}")
