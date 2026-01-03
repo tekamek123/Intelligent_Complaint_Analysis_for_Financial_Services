@@ -1,0 +1,262 @@
+[
+  {
+    "question_id": 1,
+    "question": "What are the most common issues with credit cards?",
+    "question_type": "product-specific",
+    "expected_focus": "Credit card related complaints, common issues like unauthorized charges, billing errors",
+    "generated_answer": "i have a number of different problems with credit cards. i have had a number of problems with credit cards. i have had a number of problems with credit cards. i have had a number of problems with cred...",
+    "retrieved_sources": [
+      {
+        "excerpt_num": 1,
+        "text_preview": ". i have never had so many issues with a credit card in my life. they are a bill bully, and staff are rude.",
+        "product": "Credit card or prepaid card",
+        "complaint_id": "3451740",
+        "issue": "Problem with a purchase shown on your statement"
+      },
+      {
+        "excerpt_num": 2,
+        "text_preview": ". i also have excellent credit. i opened this credit card for the sole purpose of making 1 large transaction, a piece of fine jewelry, that this would...",
+        "product": "Credit card or prepaid card",
+        "complaint_id": "3146218",
+        "issue": "Fees or interest"
+      }
+    ],
+    "num_chunks_retrieved": 5,
+    "quality_score": null,
+    "comments": ""
+  },
+  {
+    "question_id": 2,
+    "question": "What problems do customers face with personal loans?",
+    "question_type": "product-specific",
+    "expected_focus": "Personal loan complaints, issues with repayment, interest rates, loan terms",
+    "generated_answer": "Customer Service",
+    "retrieved_sources": [
+      {
+        "excerpt_num": 1,
+        "text_preview": "throughout the years one main financial has been deceptive and misleading regarding a personal loan that i took out. they have predatory unethical len...",
+        "product": "Payday loan, title loan, or personal loan",
+        "complaint_id": "4690990",
+        "issue": "Problem with the payoff process at the end of the loan"
+      },
+      {
+        "excerpt_num": 2,
+        "text_preview": ". i also think that this company, is generally predatory in the way that they restrict access to the customer managing the loan themselves without the...",
+        "product": "Payday loan, title loan, personal loan, or advance loan",
+        "complaint_id": "8709797",
+        "issue": "Charged fees or interest you didn't expect"
+      }
+    ],
+    "num_chunks_retrieved": 5,
+    "quality_score": null,
+    "comments": ""
+  },
+  {
+    "question_id": 3,
+    "question": "Compare complaint patterns between credit cards and savings accounts.",
+    "question_type": "cross-product",
+    "expected_focus": "Differences in complaint types between two product categories",
+    "generated_answer": "This question is a question about whether a credit card is really a savings account in which the borrower pays the interest on the interest. The credit card issuer claims to be a credit card issuer, b...",
+    "retrieved_sources": [
+      {
+        "excerpt_num": 1,
+        "text_preview": "to whom it may concern, i am writing to seek help for unreasonable actions of u.s. bank on my accounts. i had a previous complaint of they closed my c...",
+        "product": "Checking or savings account",
+        "complaint_id": "11167346",
+        "issue": "Managing an account"
+      },
+      {
+        "excerpt_num": 2,
+        "text_preview": "im filing a complaint against xxxx xxxx regarding the deceptive practices related to their xxxx high yield interest savings account. xxxx xxxx misrepr...",
+        "product": "Checking or savings account",
+        "complaint_id": "11671746",
+        "issue": "Managing an account"
+      }
+    ],
+    "num_chunks_retrieved": 5,
+    "quality_score": null,
+    "comments": ""
+  },
+  {
+    "question_id": 4,
+    "question": "What are the main concerns about money transfer services?",
+    "question_type": "product-specific",
+    "expected_focus": "Money transfer issues, transaction problems, fees, delays",
+    "generated_answer": "The public benefit is the financial protection of the person or agency that provides the service.",
+    "retrieved_sources": [
+      {
+        "excerpt_num": 1,
+        "text_preview": ". i think consumers deserve a better service than this and money gram may have to stop promising safe and secure money transfers since that seems not ...",
+        "product": "Money transfer, virtual currency, or money service",
+        "complaint_id": "3686114",
+        "issue": "Money was not available when promised"
+      },
+      {
+        "excerpt_num": 2,
+        "text_preview": ". also just as banks, credit card companies, etc, who take peoples monies for business, guarantee to consumers to be responsible for any liabilities a...",
+        "product": "Money transfer, virtual currency, or money service",
+        "complaint_id": "3686114",
+        "issue": "Money was not available when promised"
+      }
+    ],
+    "num_chunks_retrieved": 5,
+    "quality_score": null,
+    "comments": ""
+  },
+  {
+    "question_id": 5,
+    "question": "Find complaints about unauthorized charges or fraudulent transactions.",
+    "question_type": "specific-issue",
+    "expected_focus": "Security-related complaints, unauthorized transactions, fraud",
+    "generated_answer": "No such report was filed.",
+    "retrieved_sources": [
+      {
+        "excerpt_num": 1,
+        "text_preview": "i am writing to file a formal complaint concerning a series of unauthorized transactions on my credit card account and the subsequent denial of my req...",
+        "product": "Credit card or prepaid card",
+        "complaint_id": "7375723",
+        "issue": "Problem with a purchase shown on your statement"
+      },
+      {
+        "excerpt_num": 2,
+        "text_preview": ". despite confirming with a banker that the displayed transactions were legitimate, i later found 38 unauthorized charges totaling over 9000.00 , all ...",
+        "product": "Checking or savings account",
+        "complaint_id": "8039259",
+        "issue": "Managing an account"
+      }
+    ],
+    "num_chunks_retrieved": 5,
+    "quality_score": null,
+    "comments": ""
+  },
+  {
+    "question_id": 6,
+    "question": "What complaint trends have emerged recently regarding customer service?",
+    "question_type": "trend-analysis",
+    "expected_focus": "Customer service issues, response times, support quality",
+    "generated_answer": "The following complaints about customer service have resulted in:",
+    "retrieved_sources": [
+      {
+        "excerpt_num": 1,
+        "text_preview": "i am filing a complaint against cash app ( block , inc. ) due to inadequate customer service and unfair practices, which violate the consumer financia...",
+        "product": "Money transfer, virtual currency, or money service",
+        "complaint_id": "11571604",
+        "issue": "Other transaction problem"
+      },
+      {
+        "excerpt_num": 2,
+        "text_preview": "i am filing a complaint against cash app ( block , inc. ) due to inadequate customer service and unfair practices, which violate the consumer financia...",
+        "product": "Money transfer, virtual currency, or money service",
+        "complaint_id": "11641108",
+        "issue": "Other transaction problem"
+      }
+    ],
+    "num_chunks_retrieved": 5,
+    "quality_score": null,
+    "comments": ""
+  },
+  {
+    "question_id": 7,
+    "question": "What are the main issues with billing and payment processing?",
+    "question_type": "specific-issue",
+    "expected_focus": "Billing errors, payment processing problems, transaction issues",
+    "generated_answer": "The use of monies is only an option when the payment is received on the basis of the terms of the payment, and the method of payment is not discussed. However, there is a certain amount of time that t...",
+    "retrieved_sources": [
+      {
+        "excerpt_num": 1,
+        "text_preview": ". maybe they are too big to care but they should be held accountable for how they are treating consumers who are making multiple payments in a billing...",
+        "product": "Credit card",
+        "complaint_id": "8530458",
+        "issue": "Trouble using your card"
+      },
+      {
+        "excerpt_num": 2,
+        "text_preview": ". vendors that unless they are providing sufficient information on their statement for a customer to pay their bill, that they should have no expectat...",
+        "product": "Credit card",
+        "complaint_id": "9416423",
+        "issue": "Problem when making payments"
+      }
+    ],
+    "num_chunks_retrieved": 5,
+    "quality_score": null,
+    "comments": ""
+  },
+  {
+    "question_id": 8,
+    "question": "What are customers saying about interest rates and fees?",
+    "question_type": "specific-issue",
+    "expected_focus": "Interest rate complaints, fee-related issues, pricing concerns",
+    "generated_answer": "In the past several weeks, the company has decided to remove users who are unhappy with the rate. This includes: - The company claims that all users have been given a free rate. They claim that any us...",
+    "retrieved_sources": [
+      {
+        "excerpt_num": 1,
+        "text_preview": ". i am shocked at what they are doing and it is wrong. gouging customers with so much interest rate charges it makes it difficult to make the payment.",
+        "product": "Credit card or prepaid card",
+        "complaint_id": "2974525",
+        "issue": "Fees or interest"
+      },
+      {
+        "excerpt_num": 2,
+        "text_preview": "customer out, so the customer wo n't be able to complete payment transaction and they think that would justified an increase of their interest rate as...",
+        "product": "Credit card",
+        "complaint_id": "2182599",
+        "issue": "Billing statement"
+      }
+    ],
+    "num_chunks_retrieved": 5,
+    "quality_score": null,
+    "comments": ""
+  },
+  {
+    "question_id": 9,
+    "question": "What are the primary concerns about account management and access?",
+    "question_type": "specific-issue",
+    "expected_focus": "Account access issues, account management problems, login difficulties",
+    "generated_answer": "Yes, but if you don't know where to download it, there is no better way to download it than to use a VPN.",
+    "retrieved_sources": [
+      {
+        "excerpt_num": 1,
+        "text_preview": ". but there may be more coming re actual banking policies. you need to implement fair and realistic policies regarding revolving accounts at the corpo...",
+        "product": "Credit card or prepaid card",
+        "complaint_id": "2573742",
+        "issue": "Fees or interest"
+      },
+      {
+        "excerpt_num": 2,
+        "text_preview": ". this is taking advantage of elderly people! how is this allowed? this bank has basically bullied my parents into opening unnecessary accounts and is...",
+        "product": "Checking or savings account",
+        "complaint_id": "4337138",
+        "issue": "Managing an account"
+      }
+    ],
+    "num_chunks_retrieved": 5,
+    "quality_score": null,
+    "comments": ""
+  },
+  {
+    "question_id": 10,
+    "question": "What are the main complaints across all financial products we offer?",
+    "question_type": "cross-product",
+    "expected_focus": "Overall complaint patterns, common themes across all products",
+    "generated_answer": "1. We have one of the most generous and efficient customer service teams in the business.",
+    "retrieved_sources": [
+      {
+        "excerpt_num": 1,
+        "text_preview": ". as you know that has created an incredible amount of stress, anxiety and frustration as they have left me without any money to keep up with my daily...",
+        "product": "Checking or savings account",
+        "complaint_id": "13302090",
+        "issue": "Closing an account"
+      },
+      {
+        "excerpt_num": 2,
+        "text_preview": ". i trust that the consumer financial protection bureau will take this complaint seriously and ensure a fair and swift resolution. i look forward to y...",
+        "product": "Checking or savings account",
+        "complaint_id": "7924250",
+        "issue": "Managing an account"
+      }
+    ],
+    "num_chunks_retrieved": 5,
+    "quality_score": null,
+    "comments": ""
+  }
+]
